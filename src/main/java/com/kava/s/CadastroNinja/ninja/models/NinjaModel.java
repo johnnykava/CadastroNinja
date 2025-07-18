@@ -1,4 +1,4 @@
-package com.kava.s.CadastroNinja.models;
+package com.kava.s.CadastroNinja.ninja.models;
 
 import jakarta.persistence.*;
 
