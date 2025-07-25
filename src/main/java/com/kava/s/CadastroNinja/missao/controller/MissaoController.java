@@ -1,10 +1,20 @@
 package com.kava.s.CadastroNinja.missao.controller;
 
+import com.kava.s.CadastroNinja.missao.models.MissaoModel;
+import com.kava.s.CadastroNinja.missao.service.MissaoService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/missoes")
 public class MissaoController {
+
+    private MissaoService missaoService;
+
+    public MissaoController(MissaoService missaoService) {
+        this.missaoService = missaoService;
+    }
 
     //POST -- Manda uma requisição para criar as missões
     @PostMapping("/criar")
@@ -14,8 +24,8 @@ public class MissaoController {
 
     //GET -- Manda uma requisição para listar todos as missões
     @GetMapping("/listar")
-    public String mostrarTodasMissoes(){
-        return "Lista todas as missões";
+    public List<MissaoModel> mostrarTodasMissoes(){
+        return missaoService.listarMissoes();
     }
 
     //GET -- Manda uma requisição para listar missao por ID
