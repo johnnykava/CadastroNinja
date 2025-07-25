@@ -1,5 +1,6 @@
 package com.kava.s.CadastroNinja.missao.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kava.s.CadastroNinja.ninja.models.NinjaModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,6 @@ public class MissaoModel {
     private String dificuldade;
 
     @OneToMany(mappedBy = "missoes")
+    @JsonIgnore //Ignora a Serialização
     private List<NinjaModel> ninjas;
 }
