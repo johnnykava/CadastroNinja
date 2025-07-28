@@ -33,6 +33,17 @@ public class MissaoService {
         return caixaMissao.orElse(null);
     }
 
+    //PUT -- Manda uma requisição para Alterar uma Missao
+    public MissaoModel alterarMissao(Long id, MissaoModel missaoAtualizada){
+        if(missaoRepository.existsById(id)){
+            missaoAtualizada.setId(id);
+
+            return missaoRepository.save(missaoAtualizada);
+        }
+
+        return null;
+    }
+
     //DELETE -- Manda uma requisição para deletar uma Missão
     public void deletarMissao(Long id){
         missaoRepository.deleteById(id);
