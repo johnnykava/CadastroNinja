@@ -21,31 +21,31 @@ public class NinjaController {
         return "Essa é minha primeira rota";
     }
 
-    //Adicionar Ninja
+    //POST -- Manda uma requisição para criar ninja
     @PostMapping("/criar")
     public NinjaModel criarNinja(@RequestBody NinjaModel ninja){
         return ninjaService.criarNinja(ninja);
     }
 
-    //Mostrar todos os ninjas
+    //GET -- Manda uma requisição para listar todos os ninjas
     @GetMapping("/listar")
     public List<NinjaModel> listarNinjas(){
         return ninjaService.listarNinjas();
     }
 
-    //Mostrar ninja por id
+    //GET -- Manda uma requisição para listar ninja por ID
     @GetMapping("/listar/{id}")
     public NinjaModel listarNinjaPorId(@PathVariable Long id){
         return ninjaService.listarNinjaId(id);
     }
 
-    //Alterar ninja
-    @PutMapping("/alteraID")
-    public String alterarNinja(){
-        return "Altera ninja";
+    //PUT -- Manda uma requisição para alterar um ninja
+    @PutMapping("/alterar/{id}")
+    public NinjaModel alterarNinja(@PathVariable Long id, @RequestBody NinjaModel ninjaAtualizado){
+        return ninjaService.alterarNinja(id, ninjaAtualizado);
     }
 
-    //Deletar Ninja
+    //DELETE -- Manda uma requisição para deletar um ninja
     @DeleteMapping("/deletar/{id}")
     public void deletaNinja(@PathVariable Long id){
         ninjaService.deletarNinja(id);
