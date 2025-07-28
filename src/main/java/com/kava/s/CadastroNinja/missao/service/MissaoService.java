@@ -5,6 +5,7 @@ import com.kava.s.CadastroNinja.missao.repository.MissaoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MissaoService {
@@ -17,5 +18,11 @@ public class MissaoService {
 
     public List<MissaoModel> listarMissoes(){
         return missaoRepository.findAll();
+    }
+
+    public MissaoModel listarMissaoId(Long id){
+        Optional<MissaoModel> caixaMissao = missaoRepository.findById(id);
+
+        return caixaMissao.orElse(null);
     }
 }

@@ -24,14 +24,14 @@ public class MissaoController {
 
     //GET -- Manda uma requisição para listar todos as missões
     @GetMapping("/listar")
-    public List<MissaoModel> mostrarTodasMissoes(){
+    public List<MissaoModel> listarMissoes(){
         return missaoService.listarMissoes();
     }
 
     //GET -- Manda uma requisição para listar missao por ID
-    @GetMapping("/listarID")
-    public String mostrarMissaoID(){
-        return "Mostra missao por ID";
+    @GetMapping("/listar/{id}")
+    public MissaoModel listarMissaoPorId(@PathVariable Long id){
+        return missaoService.listarMissaoId(id);
     }
 
     //PUT -- Manda uma requisição para Alterar uma Missao
