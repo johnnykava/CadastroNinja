@@ -1,5 +1,7 @@
 package com.kava.s.CadastroNinja.missao.service;
 
+import com.kava.s.CadastroNinja.missao.dto.MissaoDTO;
+import com.kava.s.CadastroNinja.missao.mapper.MissaoMapper;
 import com.kava.s.CadastroNinja.missao.models.MissaoModel;
 import com.kava.s.CadastroNinja.missao.repository.MissaoRepository;
 import org.springframework.stereotype.Service;
@@ -11,14 +13,18 @@ import java.util.Optional;
 public class MissaoService {
 
     private MissaoRepository missaoRepository;
+    private MissaoMapper missaoMapper;
 
-    public MissaoService(MissaoRepository missaoRepository) {
+    public MissaoService(MissaoRepository missaoRepository, MissaoMapper missaoMapper) {
         this.missaoRepository = missaoRepository;
+        this.missaoMapper = missaoMapper;
     }
 
     //POST -- Manda uma requisição para criar as missões
-    public MissaoModel criarMissao(MissaoModel missao){
-        return missaoRepository.save(missao);
+    public MissaoDTO criarMissao(MissaoDTO missaoDTO){
+        MissaoModel missao = missaoMapper.map(missaoDTO);
+        missaoRepository.save(missao);
+        return missaoMapper.map(missao);
     }
 
     //GET -- Manda uma requisição para listar todos as missões

@@ -1,5 +1,6 @@
 package com.kava.s.CadastroNinja.missao.controller;
 
+import com.kava.s.CadastroNinja.missao.dto.MissaoDTO;
 import com.kava.s.CadastroNinja.missao.models.MissaoModel;
 import com.kava.s.CadastroNinja.missao.service.MissaoService;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class MissaoController {
 
     //POST -- Manda uma requisição para criar as missões
     @PostMapping("/criar")
-    public MissaoModel criarMissao(@RequestBody MissaoModel missao){
+    public MissaoDTO criarMissao(@RequestBody MissaoDTO missao){
         return missaoService.criarMissao(missao);
     }
 
