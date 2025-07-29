@@ -1,5 +1,7 @@
 package com.kava.s.CadastroNinja.ninja.service;
 
+import com.kava.s.CadastroNinja.ninja.dto.NinjaDTO;
+import com.kava.s.CadastroNinja.ninja.mapper.NinjaMapper;
 import com.kava.s.CadastroNinja.ninja.models.NinjaModel;
 import com.kava.s.CadastroNinja.ninja.repository.NinjaRepository;
 import org.springframework.stereotype.Service;
@@ -11,14 +13,18 @@ import java.util.Optional;
 public class NinjaService {
 
     private NinjaRepository ninjaRepository;
+    private NinjaMapper ninjaMapper;
 
-    public NinjaService(NinjaRepository ninjaRepository) {
+    public NinjaService(NinjaRepository ninjaRepository, NinjaMapper ninjaMapper) {
         this.ninjaRepository = ninjaRepository;
+        this.ninjaMapper = ninjaMapper;
     }
 
     //POST -- Manda uma requisição para criar ninja
-    public NinjaModel criarNinja(NinjaModel ninja){
-        return ninjaRepository.save(ninja);
+    public NinjaDTO criarNinja(NinjaDTO ninjaDTO){
+        NinjaModel ninja = ninjaMapper.map(ninjaDTO);
+        ninjaRepository.save(ninja);
+        return ninjaMapper.map(ninja);
     }
 
     //GET -- Manda uma requisição para listar todos os ninjas

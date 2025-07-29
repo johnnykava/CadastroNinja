@@ -1,5 +1,6 @@
 package com.kava.s.CadastroNinja.ninja.controller;
 
+import com.kava.s.CadastroNinja.ninja.dto.NinjaDTO;
 import com.kava.s.CadastroNinja.ninja.models.NinjaModel;
 import com.kava.s.CadastroNinja.ninja.service.NinjaService;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class NinjaController {
 
     //POST -- Manda uma requisição para criar ninja
     @PostMapping("/criar")
-    public NinjaModel criarNinja(@RequestBody NinjaModel ninja){
+    public NinjaDTO criarNinja(@RequestBody NinjaDTO ninja){
         return ninjaService.criarNinja(ninja);
     }
 
