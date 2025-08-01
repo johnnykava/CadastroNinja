@@ -52,6 +52,8 @@ public class NinjaService {
             NinjaModel ninja = ninjaMapper.map(ninjaDTO);
             ninja.setId(id);
 
+            ninjaRepository.save(ninja);
+
             return ninjaMapper.map(ninja);
         }
         return null;
