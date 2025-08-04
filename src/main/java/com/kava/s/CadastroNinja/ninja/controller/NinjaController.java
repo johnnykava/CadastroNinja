@@ -26,9 +26,10 @@ public class NinjaController {
     //POST -- Manda uma requisição para criar ninja
     @PostMapping("/criar")
     public ResponseEntity<String> criarNinja(@RequestBody NinjaDTO ninja){
-        ninjaService.criarNinja(ninja);
+        NinjaDTO ninjaCriado = ninjaService.criarNinja(ninja);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ninja + " criado com sucesso!");
+                .body(ninjaCriado + " criado com sucesso!");
     }
 
     //GET -- Manda uma requisição para listar todos os ninjas
@@ -41,38 +42,21 @@ public class NinjaController {
 
     //GET -- Manda uma requisição para listar ninja por ID
     @GetMapping("/listar/{id}")
-    public ResponseEntity<?> listarNinjaPorId(@PathVariable Long id){
-        NinjaDTO ninja = ninjaService.listarNinjaId(id);
-
-        if(ninja != null){
-            return ResponseEntity.ok(ninja);
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Ninja com id: " + id + " não encontrado");
+    public ResponseEntity<NinjaDTO> listarNinjaPorId(@PathVariable Long id){
+        return ResponseEntity.ok(ninjaService.listarNinjaId(id));
     }
 
     //PUT -- Manda uma requisição para alterar um ninja
     @PutMapping("/alterar/{id}")
-    public ResponseEntity<String> alterarNinja(@PathVariable Long id, @RequestBody NinjaDTO ninjaAtualizado){
-        if(ninjaService.alterarNinja(id, ninjaAtualizado) != null){
-            return ResponseEntity.ok("Ninja com id: " + id + " atualizado com sucesso!");
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Ninja com id: " + id + " não encontrado!");
+    public ResponseEntity<NinjaDTO> alterarNinja(@PathVariable Long id, @RequestBody NinjaDTO ninjaAtualizado){
+        return ResponseEntity.ok(ninjaService.alterarNinja(id, ninjaAtualizado));
     }
 
     //DELETE -- Manda uma requisição para deletar um ninja
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<String> deletaNinja(@PathVariable Long id){
-        if(ninjaService.listarNinjaId(id) != null){
-            ninjaService.deletarNinja(id);
+    public ResponseEntity<Void> deletaNinja(@PathVariable Long id){
+        ninjaService.deletarNinja(id);
 
-            return ResponseEntity.ok("Ninja com id: " + id + " deletado com sucesso!");
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Ninja com id: " + id + " não encontrado!");
+        return ResponseEntity.noContent().build();
     }
 }
