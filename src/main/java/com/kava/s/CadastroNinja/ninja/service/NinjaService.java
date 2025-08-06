@@ -24,7 +24,19 @@ public class NinjaService {
     //POST -- Manda uma requisição para criar ninja
     public NinjaDTO criarNinja(NinjaDTO ninjaDTO){
         NinjaModel ninja = ninjaMapper.map(ninjaDTO);
+
+        List<NinjaModel> ninjasEmail = ninjaRepository.findAll();
+
+        Optional<NinjaModel> resultado = ninjasEmail.stream()
+                .filter(n -> n.getEmail().equals(ninja.getEmail()))
+                .findFirst();
+
+        if(resultado.isPresent()){
+            throw new IllegalArgumentException("Não foi possivel realizar o cadastro. Verifique os dados e tente novamente.");
+        }
+
         ninjaRepository.save(ninja);
+
         return ninjaMapper.map(ninja);
     }
 
@@ -39,30 +51,38 @@ public class NinjaService {
 
     //GET -- Manda uma requisição para listar ninja por ID
     public NinjaDTO listarNinjaId(Long id){
-        Optional<NinjaModel> caixaNinja = ninjaRepository.findById(id);
+        NinjaModel ninja = buscaPorId(id);
 
-        return caixaNinja.map(ninjaMapper::map).orElse(null);
+        return ninjaMapper.map(ninja);
     }
 
     //PUT -- Manda uma requisição para alterar um ninja
+    //TODO: Mudar de PUT para PATCH
     public NinjaDTO alterarNinja(Long id, NinjaDTO ninjaDTO){
-        Optional<NinjaModel> caixaNinja = ninjaRepository.findById(id);
+        NinjaModel ninja = buscaPorId(id);
 
-        if(caixaNinja.isPresent()){
-            NinjaModel ninja = ninjaMapper.map(ninjaDTO);
-            ninja.setId(id);
+        ninja = ninjaMapper.map(ninjaDTO);
+        ninja.setId(id);
 
-            return ninjaMapper.map(ninja);
-        }
-        return null;
+        ninjaRepository.save(ninja);
+
+        return ninjaMapper.map(ninja);
     }
 
     //DELETE -- Manda uma requisição para deletar um ninja
     public void deletarNinja(Long id){
+        NinjaModel ninja = buscaPorId(id);
+
+        ninjaRepository.deleteById(ninja.getId());
+    }
+
+    private NinjaModel buscaPorId(Long id){
         Optional<NinjaModel> caixaNinja = ninjaRepository.findById(id);
 
         if(caixaNinja.isPresent()){
-            ninjaRepository.deleteById(id);
+            return caixaNinja.get();
         }
+
+        throw new IllegalArgumentException("Recurso não encontrado.");
     }
 }

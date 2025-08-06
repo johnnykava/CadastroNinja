@@ -25,6 +25,7 @@ public class MissaoService {
     public MissaoDTO criarMissao(MissaoDTO missaoDTO){
         MissaoModel missao = missaoMapper.map(missaoDTO);
         missaoRepository.save(missao);
+
         return missaoMapper.map(missao);
     }
 
@@ -39,31 +40,36 @@ public class MissaoService {
 
     //GET -- Manda uma requisição para listar missao por ID
     public MissaoDTO listarMissaoId(Long id){
-        Optional<MissaoModel> caixaMissao = missaoRepository.findById(id);
+        MissaoModel missao = buscaPorId(id);
 
-        return caixaMissao.map(missaoMapper::map).orElse(null);
+        return missaoMapper.map(missao);
     }
 
     //PUT -- Manda uma requisição para Alterar uma Missao
     public MissaoDTO alterarMissao(Long id, MissaoDTO missaoDTO){
-        Optional<MissaoModel> caixaMissao = missaoRepository.findById(id);
+        MissaoModel missao = buscaPorId(id);
 
-        if(caixaMissao.isPresent()){
-            MissaoModel missao = missaoMapper.map(missaoDTO);
-            missao.setId(id);
+        missao = missaoMapper.map(missaoDTO);
+        missao.setId(id);
+        missaoRepository.save(missao);
 
-            return missaoMapper.map(missao);
-        }
-
-        return null;
+        return missaoMapper.map(missao);
     }
 
     //DELETE -- Manda uma requisição para deletar uma Missão
     public void deletarMissao(Long id){
+        MissaoModel missao = buscaPorId(id);
+
+        missaoRepository.deleteById(missao.getId());
+    }
+
+    private MissaoModel buscaPorId(Long id){
         Optional<MissaoModel> caixaMissao = missaoRepository.findById(id);
 
         if(caixaMissao.isPresent()){
-            missaoRepository.deleteById(id);
+            return caixaMissao.get();
         }
+
+        throw new IllegalArgumentException("Recurso não encontrado.");
     }
 }
