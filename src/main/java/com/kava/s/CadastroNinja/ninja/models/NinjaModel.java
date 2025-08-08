@@ -28,6 +28,8 @@ public class NinjaModel {
 
     private String rank;
 
+    private String imagemUrl;
+
     @ManyToOne
     @JoinColumn(name = "missoes_id")
     private MissaoModel missoes;
