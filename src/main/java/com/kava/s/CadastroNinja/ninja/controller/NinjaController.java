@@ -47,7 +47,7 @@ public class NinjaController {
     }
 
     //PUT -- Manda uma requisição para alterar um ninja
-    @PutMapping("/alterar/{id}")
+    @PatchMapping("/alterar/{id}")
     public ResponseEntity<NinjaDTO> alterarNinja(@PathVariable Long id, @RequestBody NinjaDTO ninjaAtualizado){
         return ResponseEntity.ok(ninjaService.alterarNinja(id, ninjaAtualizado));
     }

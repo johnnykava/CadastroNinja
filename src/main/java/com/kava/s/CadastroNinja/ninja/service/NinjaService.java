@@ -56,17 +56,36 @@ public class NinjaService {
         return ninjaMapper.map(ninja);
     }
 
-    //PUT -- Manda uma requisição para alterar um ninja
+    //PATCH -- Manda uma requisição para alterar um ninja
     //TODO: Mudar de PUT para PATCH
     public NinjaDTO alterarNinja(Long id, NinjaDTO ninjaDTO){
         NinjaModel ninja = buscaPorId(id);
 
-        ninja = ninjaMapper.map(ninjaDTO);
-        ninja.setId(id);
+        if(ninjaDTO.getNome() != null){
+            ninja.setNome(ninjaDTO.getNome());
+        }
 
-        ninjaRepository.save(ninja);
+        if(ninjaDTO.getEmail() != null){
+            ninja.setEmail(ninjaDTO.getEmail());
+        }
 
-        return ninjaMapper.map(ninja);
+        if(ninjaDTO.getIdade() != null){
+            ninja.setIdade(ninjaDTO.getIdade());
+        }
+
+        if(ninjaDTO.getRank() != null){
+            ninja.setRank(ninjaDTO.getRank());
+        }
+
+        if(ninjaDTO.getImagemUrl() != null){
+            ninja.setImagemUrl(ninjaDTO.getImagemUrl());
+        }
+
+        if(ninjaDTO.getMissoes() != null){
+            ninja.setMissoes(ninjaDTO.getMissoes());
+        }
+
+        return ninjaMapper.map(ninjaRepository.save(ninja));
     }
 
     //DELETE -- Manda uma requisição para deletar um ninja
