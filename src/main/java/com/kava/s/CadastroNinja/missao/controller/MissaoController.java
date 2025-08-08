@@ -43,8 +43,8 @@ public class MissaoController {
         return ResponseEntity.ok(missaoService.listarMissaoId(id));
     }
 
-    //PUT -- Manda uma requisição para Alterar uma Missao
-    @PutMapping("/alterar/{id}")
+    //PATCH -- Manda uma requisição para Alterar uma Missao
+    @PatchMapping("/alterar/{id}")
     public ResponseEntity<MissaoDTO> alterarMissao(@PathVariable Long id, @RequestBody MissaoDTO missaoDTO){
         return ResponseEntity.ok(missaoService.alterarMissao(id, missaoDTO));
     }

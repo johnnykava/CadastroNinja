@@ -57,7 +57,6 @@ public class NinjaService {
     }
 
     //PATCH -- Manda uma requisição para alterar um ninja
-    //TODO: Mudar de PUT para PATCH
     public NinjaDTO alterarNinja(Long id, NinjaDTO ninjaDTO){
         NinjaModel ninja = buscaPorId(id);
 

@@ -45,15 +45,23 @@ public class MissaoService {
         return missaoMapper.map(missao);
     }
 
-    //PUT -- Manda uma requisição para Alterar uma Missao
+    //PATCH -- Manda uma requisição para Alterar uma Missao
     public MissaoDTO alterarMissao(Long id, MissaoDTO missaoDTO){
         MissaoModel missao = buscaPorId(id);
 
-        missao = missaoMapper.map(missaoDTO);
-        missao.setId(id);
-        missaoRepository.save(missao);
+        if(missaoDTO.getNome() != null){
+            missao.setNome(missaoDTO.getNome());
+        }
 
-        return missaoMapper.map(missao);
+        if(missaoDTO.getDificuldade() != null){
+            missao.setDificuldade(missaoDTO.getDificuldade());
+        }
+
+        if(missaoDTO.getNinjas() != null){
+            missao.setNinjas(missaoDTO.getNinjas());
+        }
+
+        return missaoMapper.map(missaoRepository.save(missao));
     }
 
     //DELETE -- Manda uma requisição para deletar uma Missão
