@@ -1,29 +1,50 @@
 package com.kava.s.CadastroNinja.missao.mapper;
 
-import com.kava.s.CadastroNinja.missao.dto.MissaoDTO;
+import com.kava.s.CadastroNinja.missao.dto.MissaoCreateDTO;
+import com.kava.s.CadastroNinja.missao.dto.MissaoResponseDTO;
 import com.kava.s.CadastroNinja.missao.models.MissaoModel;
+import com.kava.s.CadastroNinja.ninja.dto.NinjaResponseDTO;
+import com.kava.s.CadastroNinja.ninja.mapper.NinjaMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MissaoMapper {
 
-    public MissaoModel map(MissaoDTO missaoDTO){
+    private final NinjaMapper ninjaMapper;
+
+    public MissaoMapper(NinjaMapper ninjaMapper) {
+        this.ninjaMapper = ninjaMapper;
+    }
+
+    public MissaoModel map(MissaoCreateDTO missaoCreateDTO){
+        if(missaoCreateDTO == null) throw new IllegalArgumentException("Teste");
+
         MissaoModel missaoModel = new MissaoModel();
-        missaoModel.setId(missaoDTO.getId());
-        missaoModel.setNome(missaoDTO.getNome());
-        missaoModel.setDificuldade(missaoDTO.getDificuldade());
-        missaoModel.setNinjas(missaoDTO.getNinjas());
+        missaoModel.setNome(missaoCreateDTO.getNome());
+        missaoModel.setDificuldade(missaoCreateDTO.getDificuldade());
 
         return missaoModel;
     }
 
-    public MissaoDTO map(MissaoModel missaoModel){
-        MissaoDTO missaoDTO = new MissaoDTO();
-        missaoDTO.setId(missaoModel.getId());
-        missaoDTO.setNome(missaoModel.getNome());
-        missaoDTO.setDificuldade(missaoModel.getDificuldade());
-        missaoDTO.setNinjas(missaoModel.getNinjas());
+    public MissaoResponseDTO map(MissaoModel missaoModel){
+        if(missaoModel == null) throw new IllegalArgumentException("Teste");
 
-        return missaoDTO;
+        MissaoResponseDTO missaoResponseDTO = new MissaoResponseDTO();
+        missaoResponseDTO.setId(missaoModel.getId());
+        missaoResponseDTO.setNome(missaoModel.getNome());
+        missaoResponseDTO.setDificuldade(missaoModel.getDificuldade());
+
+        missaoResponseDTO.setNinjas(ninjaMapper.map(missaoModel.getNinjas()));
+
+        return missaoResponseDTO;
+    }
+
+    public List<MissaoResponseDTO> map(List<MissaoModel> missaoModels){
+        return missaoModels.stream()
+                .map(this::map)
+                .collect(Collectors.toList());
     }
 }

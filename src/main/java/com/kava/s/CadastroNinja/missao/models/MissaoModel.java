@@ -27,6 +27,15 @@ public class MissaoModel {
     private String dificuldade;
 
     @OneToMany(mappedBy = "missoes")
-    @JsonIgnore //Ignora a Serialização
     private List<NinjaModel> ninjas;
+
+    public void adicionarNinja(NinjaModel ninja){
+        this.ninjas.add(ninja);
+        ninja.setMissoes(this);
+    }
+
+    public void removerNinja(NinjaModel ninja){
+        this.ninjas.remove(ninja);
+        ninja.setMissoes(null);
+    }
 }
