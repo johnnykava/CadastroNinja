@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Detalhes do Ninja</title>
+    <title>Detalhes da Missão</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
     <style>
         body {
@@ -82,35 +82,37 @@
     </style>
 </head>
 <body>
-    <h1>Detalhes do Ninja</h1>
-    <div>
-        <img th:src="${ninja.imagemUrl}" alt="${ninja.nome}" width="200" />
-        <h2 th:text="${ninja.nome}"></h2>
-        <p><strong>Email:</strong> <span th:text="${ninja.email}"></span></p>
-        <p><strong>Idade:</strong> <span th:text="${ninja.idade}"></span></p>
-        <p><strong>Rank:</strong> <span th:text="${ninja.rank}"></span></p>
+<h1>Detalhes da Missão</h1>
+<div class="container">
+    <h2 th:text="${missao.nome}"></h2>
+    <p><strong>Dificuldade:</strong> <span th:text="${missao.dificuldade}"></span></p>
 
-        <h3>Missão Atual:</h3>
-        <div th:if="${missao != null}">
-            <table>
-                <thead>
-                <tr>
-                    <th>Nome da Missão</th>
-                    <th>Dificuldade</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td th:text="${missao.nome}"></td>
-                    <td th:text="${missao.dificuldade}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div th:unless="${missao != null}">
-            <p>Este ninja não está em nenhuma missão no momento.</p>
-        </div>
+    <h3>Ninjas na Missão:</h3>
+
+    <div th:if="${!#lists.isEmpty(missao.ninjas)}">
+        <table>
+            <thead>
+            <tr>
+                <th>ID do Ninja</th>
+                <th>Nome</th>
+                <th>Rank</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ninja : ${missao.ninjas}">
+                <td th:text="${ninja.id}"></td>
+                <td th:text="${ninja.nome}"></td>
+                <td th:text="${ninja.rank}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-    <a href="/ninjas/ui/listar">Voltar para a lista de ninjas</a>
+
+    <div th:if="${#lists.isEmpty(missao.ninjas)}">
+        <p>Nenhum ninja está atribuído a esta missão no momento.</p>
+    </div>
+
+</div>
+<a th:href="@{/missoes/ui/listar}">Voltar para a lista de missões</a>
 </body>
 </html>

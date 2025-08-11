@@ -37,7 +37,9 @@ public class MissaoMapper {
         missaoResponseDTO.setNome(missaoModel.getNome());
         missaoResponseDTO.setDificuldade(missaoModel.getDificuldade());
 
-        missaoResponseDTO.setNinjas(ninjaMapper.map(missaoModel.getNinjas()));
+        if(missaoModel.getNinjas() != null){
+            missaoResponseDTO.setNinjas(ninjaMapper.map(missaoModel.getNinjas()));
+        }
 
         return missaoResponseDTO;
     }
