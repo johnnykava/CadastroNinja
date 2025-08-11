@@ -1,9 +1,14 @@
 package com.kava.s.CadastroNinja.ninja.service;
 
-import com.kava.s.CadastroNinja.ninja.dto.NinjaDTO;
+import com.kava.s.CadastroNinja.missao.models.MissaoModel;
+import com.kava.s.CadastroNinja.missao.repository.MissaoRepository;
+import com.kava.s.CadastroNinja.ninja.dto.NinjaCreateDTO;
+import com.kava.s.CadastroNinja.ninja.dto.NinjaResponseDTO;
+import com.kava.s.CadastroNinja.ninja.dto.NinjaUpdateDTO;
 import com.kava.s.CadastroNinja.ninja.mapper.NinjaMapper;
 import com.kava.s.CadastroNinja.ninja.models.NinjaModel;
 import com.kava.s.CadastroNinja.ninja.repository.NinjaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,16 +19,18 @@ import java.util.stream.Collectors;
 public class NinjaService {
 
     private final NinjaRepository ninjaRepository;
+    private final MissaoRepository missaoRepository;
     private final NinjaMapper ninjaMapper;
 
-    public NinjaService(NinjaRepository ninjaRepository, NinjaMapper ninjaMapper) {
+    public NinjaService(NinjaRepository ninjaRepository, MissaoRepository missaoRepository, NinjaMapper ninjaMapper) {
         this.ninjaRepository = ninjaRepository;
+        this.missaoRepository = missaoRepository;
         this.ninjaMapper = ninjaMapper;
     }
 
     //POST -- Manda uma requisição para criar ninja
-    public NinjaDTO criarNinja(NinjaDTO ninjaDTO){
-        NinjaModel ninja = ninjaMapper.map(ninjaDTO);
+    public NinjaResponseDTO criarNinja(NinjaCreateDTO ninjaCreateDTO){
+        NinjaModel ninja = ninjaMapper.map(ninjaCreateDTO);
 
         List<NinjaModel> ninjasEmail = ninjaRepository.findAll();
 
@@ -35,56 +42,80 @@ public class NinjaService {
             throw new IllegalArgumentException("Não foi possivel realizar o cadastro. Verifique os dados e tente novamente.");
         }
 
-        ninjaRepository.save(ninja);
+        if(ninjaCreateDTO.getMissaoId() != null){
+            Optional<MissaoModel> caixaMissao = missaoRepository.findById(ninjaCreateDTO.getMissaoId());
 
-        return ninjaMapper.map(ninja);
+            if(caixaMissao.isPresent()){
+                MissaoModel missao = caixaMissao.get();
+
+                missao.adicionarNinja(ninja);
+            }
+            else{
+                throw new IllegalArgumentException("Missão não encontrada.");
+            }
+        }
+
+        return ninjaMapper.map(ninjaRepository.save(ninja));
     }
 
     //GET -- Manda uma requisição para listar todos os ninjas
-    public List<NinjaDTO> listarNinjas(){
+    public List<NinjaResponseDTO> listarNinjas(){
         List<NinjaModel> ninjaModel = ninjaRepository.findAll();
 
-        return ninjaModel.stream()
-                .map(ninjaMapper::map)
-                .collect(Collectors.toList());
+        return ninjaMapper.map(ninjaModel);
     }
 
     //GET -- Manda uma requisição para listar ninja por ID
-    public NinjaDTO listarNinjaId(Long id){
+    public NinjaResponseDTO listarNinjaId(Long id){
         NinjaModel ninja = buscaPorId(id);
 
         return ninjaMapper.map(ninja);
     }
 
     //PATCH -- Manda uma requisição para alterar um ninja
-    public NinjaDTO alterarNinja(Long id, NinjaDTO ninjaDTO){
+    public NinjaResponseDTO alterarNinja(Long id, NinjaUpdateDTO ninjaUpdateDTO){
         NinjaModel ninja = buscaPorId(id);
 
-        if(ninjaDTO.getNome() != null){
-            ninja.setNome(ninjaDTO.getNome());
+        if(ninjaUpdateDTO.getNome() != null){
+            ninja.setNome(ninjaUpdateDTO.getNome());
         }
 
-        if(ninjaDTO.getEmail() != null){
-            ninja.setEmail(ninjaDTO.getEmail());
+        if(ninjaUpdateDTO.getEmail() != null){
+            ninja.setEmail(ninjaUpdateDTO.getEmail());
         }
 
-        if(ninjaDTO.getIdade() != null){
-            ninja.setIdade(ninjaDTO.getIdade());
+        if(ninjaUpdateDTO.getIdade() != null){
+            ninja.setIdade(ninjaUpdateDTO.getIdade());
         }
 
-        if(ninjaDTO.getRank() != null){
-            ninja.setRank(ninjaDTO.getRank());
+        if(ninjaUpdateDTO.getRank() != null){
+            ninja.setRank(ninjaUpdateDTO.getRank());
         }
 
-        if(ninjaDTO.getImagemUrl() != null){
-            ninja.setImagemUrl(ninjaDTO.getImagemUrl());
-        }
-
-        if(ninjaDTO.getMissoes() != null){
-            ninja.setMissoes(ninjaDTO.getMissoes());
+        if(ninjaUpdateDTO.getImagemUrl() != null){
+            ninja.setImagemUrl(ninjaUpdateDTO.getImagemUrl());
         }
 
         return ninjaMapper.map(ninjaRepository.save(ninja));
+    }
+
+    //PUT -- Manda uma requisição para altarerar uma missao do ninja
+    public NinjaResponseDTO atribuirMissao(Long ninjaId, Long missaoId){
+        NinjaModel ninja = buscaPorId(ninjaId);
+        Optional<MissaoModel> caixaMissao = missaoRepository.findById(missaoId);
+
+        if(caixaMissao.isPresent()){
+            MissaoModel missao = caixaMissao.get();
+
+            missao.adicionarNinja(ninja);
+        }
+        else{
+            throw new IllegalArgumentException("Missão não encontrada.");
+        }
+
+        ninjaRepository.save(ninja);
+
+        return ninjaMapper.map(ninja);
     }
 
     //DELETE -- Manda uma requisição para deletar um ninja
@@ -92,6 +123,17 @@ public class NinjaService {
         NinjaModel ninja = buscaPorId(id);
 
         ninjaRepository.deleteById(ninja.getId());
+    }
+
+    //DELETE -- Manda uma requisição para deletar o ninja de missão
+    public void removerMissao(Long ninjaId){
+        NinjaModel ninja = buscaPorId(ninjaId);
+
+        if(ninja.getMissoes() != null){
+            ninja.getMissoes().removerNinja(ninja);
+        }
+
+        ninjaRepository.save(ninja);
     }
 
     private NinjaModel buscaPorId(Long id){

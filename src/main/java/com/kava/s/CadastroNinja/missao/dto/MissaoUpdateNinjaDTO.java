@@ -1,6 +1,5 @@
 package com.kava.s.CadastroNinja.missao.dto;
 
-import com.kava.s.CadastroNinja.ninja.models.NinjaModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MissaoDTO {
+public class MissaoUpdateNinjaDTO {
 
-    private Long id;
-    private String nome;
-    private String dificuldade;
-    private List<NinjaModel> ninjas;
+    private List<Long> ninjaIds;
 }
